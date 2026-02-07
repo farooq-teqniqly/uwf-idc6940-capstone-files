@@ -1,0 +1,45 @@
+name: Release Automation
+
+on:
+  push:
+    tags:
+      - "capstone-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Zip project files
+        run: |
+          mkdir -p upload/capstone/code
+          mkdir -p upload/capstone/data
+
+          cp code/arima_forecast_qmd_output.pdf upload/capstone/code/
+          cp code/arima_forecast.qmd upload/capstone/code/
+          cp code/lstm_forecast_qmd_output.pdf upload/capstone/code/
+          cp code/lstm_forecast.qmd upload/capstone/code/
+          cp code/preprocessing.ipynb upload/capstone/code/
+
+          cp data/arima_forecast_14day.csv upload/capstone/data/
+          cp data/lstm_forecast_14day.csv upload/capstone/data/
+          cp data/time_series.csv upload/capstone/data/
+
+          cd upload
+          zip -r capstone.zip capstone
+          cd ..
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          files: ./upload/capstone.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
