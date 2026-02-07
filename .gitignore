@@ -416,3 +416,14 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# R files
+.RData
+.Rhistory
+.Rproj.user
+.Rproj.user/
+.Rproj.user/
+
+# Time series forecast final files
+code/arima_forecast_files/
+code/lstm_forecast_files/
